@@ -1,22 +1,22 @@
 #!/bin/bash
 
-my_var=1
+if [ $# -eq 2 ]; then my_start=$1; my_finish=$2; else my_start=1; my_finish=10; fi
 
-if [ $# -gt 0 ]; then my_limit=$1; else my_limit=10; fi
+for parm in $*; do echo "[" $parm "]."; done
+
+my_counter=$my_start
 
 date
-while [ $my_var -le $my_limit ]
+while [ $my_counter -le $my_finish ]
 do
-	echo "[" $my_var "] = [" $RANDOM "]"
+	echo "[" $my_counter "] = [" $RANDOM "]"
 	sleep 0.125
-	my_var=$(( $my_var + 1 ))
+	my_counter=$(( $my_counter + 1 ))
 done
-
-my_var=1
 
 echo ""
 date
-for current_number in {1..10}
+for current_number in $(seq "$my_start" "$my_finish")	# For example: {1..10}
 do
 	echo "[" $current_number "] = [" $RANDOM "]"
 	sleep 0.125
