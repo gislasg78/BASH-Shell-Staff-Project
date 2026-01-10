@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Bash program to activate or deactivate the mixing of audio and video
-# playback and recording channels.
-# Created by: Gustavo Islas Gálvez.
-# Generation Date: Thursday, January 08, 2026. (3rd Version).
+# playback and recording channels
+# Created by: Gustavo Islas Gálvez
+# Generation Date: Friday, January 09, 2026. (4th Version)
 
 # Function to deactivate and clean the Stream mode
 disable_stream()
@@ -98,6 +98,30 @@ list_of_devices()
 	$(which pactl) list short sources
 }
 
+# Function that checks and verifies the existence of the commands necessary for this test script.
+verify_command()
+{
+	local my_command_directory=$(which $1)
+
+	$(which echo) "Routine for verifying the valid existence of commands."
+
+	if [ -f $my_command_directory ]
+	then
+		$(which echo) "The command: [$my_command_directory] is installed in the path: [$(which $my_command_directory)]."
+
+		if command -v $my_command_directory
+		then
+			$(which echo) "The command: [$my_command_directory] is fully enabled!"
+		else
+			$(which echo) "The command: [$1] is not possible to run it!"
+		fi
+	else
+		$(which echo) "The command: [$1] is not installed!"
+	fi
+
+	$(which echo) ""
+}
+
 # Function to briefly display the devices enabled in the system
 view_available_devices()
 {
@@ -109,15 +133,20 @@ view_available_devices()
 # Simple menu
 counter=0
 option=0
-my_date=$(date "+%A, %B %d, %Y - %H:%M:%S")
+my_date=$($(which date) "+%A, %B %d, %Y - %H:%M:%S")
 
 # Check variables with the path of each key command
-my_date_directory=$(which date)
-my_echo_directory=$(which echo)
-my_pactl_directory=$(which pactl)
+verify_command "date"
+my_date_directory=$(which date)		# date command route
 
-# Decision control if PulseAudio is installed.
-if [[ -f $my_pactl_directory && -f $my_date_directory && -f $my_echo_directory ]]
+verify_command "echo"
+my_echo_directory=$(which echo)		# echo command route
+
+verify_command "pactl"
+my_pactl_directory=$(which pactl)	# pactl command route
+
+# Decision control if PulseAudio is installed
+if [[ -f $my_date_directory && -f $my_echo_directory && -f $my_pactl_directory ]]
 then
 	$(which echo) $my_date
 	$(which echo) "Control a running PulseAudio sound server."
@@ -143,6 +172,8 @@ then
 		$(which date) "+%Y-%m-%d - %H:%M:%S"
 		$(which echo) "Selected option: [$option]."
 		$(which echo) "Attempts made:   [$counter]."
+		$(which echo) "User active:     [$USER]."
+		$(which echo) "User folder:     [$HOME]."
 		$(which echo) "Key Operation:   [$RANDOM]."
 		$(which echo) ""
 
@@ -166,5 +197,7 @@ else
 	$(which echo) $my_date_directory
 	$(which echo) $my_echo_directory
 	$(which echo) $my_pactl_directory
-	exit 1
 fi
+
+$(which echo) ""
+$(which echo) "This script had a return code of: [$?]."
