@@ -3,7 +3,7 @@
 # Bash program to activate or deactivate the mixing of audio and video
 # playback and recording channels
 # Created by: Gustavo Islas Gálvez
-# Generation Date: Friday, January 09, 2026. (5th Version)
+# Generation Date: Saturday, January 10, 2026. (6th Version)
 
 # Function to deactivate and clean the Stream mode
 disable_stream()
@@ -161,8 +161,8 @@ then
 		$(which echo) "+===+====+===+===+====+===+====+===+====+"
 		$(which echo) "| [1]. Activate Stream mode.            |"
 		$(which echo) "| [2]. Deactivate Stream and clean mode.|"
-		$(which echo) "| [3]. List enable devices.             |"
-		$(which echo) "| [4]. View available devices.          |"
+		$(which echo) "| [3]. List enable sound devices.       |"
+		$(which echo) "| [4]. View available sound devices.    |"
 		$(which echo) "| [5]. Leave this program.              |"
 		$(which echo) "+===+====+===+===+====+===+====+===+====+"
 		read -p "Select one option (1-5): " option
@@ -178,6 +178,15 @@ then
 		$(which echo) "User folder:     [$HOME]."
 		$(which echo) "Key Operation:   [$RANDOM]."
 		$(which echo) ""
+
+		case $option in
+			1) $(which echo) "Enable Stream mode.";;
+			2) $(which echo) "Disable Stream mode.";;
+			3) $(which echo) "List available sound devices.";;
+			4) $(which echo) "View enable sound devices.";;
+			5) $(which echo) "Exiting this program...";;
+			*) $(which echo) "Wrong choice: [" $option "]."
+		esac
 
 		if [ $option -eq 1 ]; then
 			enable_stream "Stream_Mix" "Mix_For_Stream" "My_Output"
