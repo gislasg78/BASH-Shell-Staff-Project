@@ -3,7 +3,7 @@
 # Bash program. Its purpose is to readjust and restore
 # the keyboard state to default values
 # Created by: Gustavo Islas Gálvez
-# Generation Date: Saturday, January 10, 2026. (2nd Version)
+# Generation Date: Saturday, January 10, 2026. (3rd Version)
 
 # Function to fully restore keyboard control
 restore_control_keyboard()
@@ -26,6 +26,10 @@ restore_control_keyboard()
 # Function to reset the keyboard's default configuration map.
 restore_map_keyboard()
 {
+	# Reset resource settings.
+	$(which echo) "Resetting resource setting..."
+	sudo $(which dconf) reset -f /org/gnome/desktop/input-sources/
+
 	# Setting default keyboard configuration...
 	$(which echo) "Setting default keyboard configuration..."
 	$(which setxkbmap) -layout es || { $(which echo) "An error occurred while executing the instruction."; }
@@ -75,6 +79,9 @@ option=0
 my_date=$($(which date) "+%A, %B %d, %Y - %H:%M:%S")
 
 # Check variables with the path of each key command
+verify_command "dconf"
+my_dconf_directory=$(which dconf)		# dconf command route
+
 verify_command "date"
 my_date_directory=$(which date)			# date command route
 
@@ -93,7 +100,7 @@ then
 	$(which echo) "$my_date"
 	$(which echo) "Utility for modifying keymaps."
 
-	while [ $option -ne 6 ]
+	while [ $option -ne 7 ]
 	do
 		$(which echo)""
 		$(which date)
@@ -105,9 +112,10 @@ then
 		$(which echo) "| [3]. Restore service keyboard. |"
 		$(which echo) "| [4]. Run key detector.         |"
 		$(which echo) "| [5]. Restart GDM3 system.      |"
-		$(which echo) "| [6]. Exit this program.        |"
+		$(which echo) "| [6]. Rehabilitate Gnome-Shell. |"
+		$(which echo) "| [7]. Exit this program.        |"
 		$(which echo) "+===+====+===+===+====+===+====+=="
-		read -p "Select one option (1-6): " option
+		read -p "Select one option (1-7): " option
 
 		if [ $? -eq 0 ]; then $(which echo) "Choice: [" $option "]."; else $(which echo) "Exit Code: [" $? "]"; fi
 
@@ -116,9 +124,11 @@ then
 		$(which date) "+%Y-%m-%d - %H:%M:%S"
 		$(which echo) "Selected option: [$option]."
 		$(which echo) "Attempts made:   [$counter]."
+		$(which echo) "Current PID:     [$$]."
+		$(which echo) "Father  PID:     [$PPID]."
 		$(which echo) "User active:     [$USER]."
 		$(which echo) "User folder:     [$HOME]."
-		$(which echo) "Key Operation:   [$RANDOM]."
+		$(which echo) "Key Random Oper: [$RANDOM]."
 		$(which echo) ""
 
 		case $option in
@@ -127,7 +137,8 @@ then
 			3) $(which echo) "Service Keyboard.";;
 			4) $(which echo) "Key Detector.";;
 			5) $(which echo) "GDM3 Restart.";;
-			6) $(which echo) "Exiting this program...";;
+			6) $(which echo) "Gnome-Shell restart.";;
+			7) $(which echo) "Exiting this program...";;
 			*) $(which echo) "Wrong choice: [" $option "]."
 		esac
 
@@ -142,6 +153,8 @@ then
 		elif [ $option -eq 5 ]; then
 			sudo systemctl restart gdm3
 		elif [ $option -eq 6 ]; then
+			killall gnome-shell
+		elif [ $option -eq 7 ]; then
 			$(which echo) "Leaving this program..."
 			break
 		else
