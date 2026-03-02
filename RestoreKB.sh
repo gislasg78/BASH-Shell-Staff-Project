@@ -3,7 +3,7 @@
 # Bash program. Its purpose is to readjust and restore
 # the keyboard state to default values
 # Created by: Gustavo Islas Gálvez
-# Generation Date: Saturday, January 10, 2026. (3rd Version)
+# Generation Date: Monday, March 02, 2026. (4th Version)
 
 # Function to fully restore keyboard control
 restore_control_keyboard()
@@ -79,11 +79,11 @@ option=0
 my_date=$($(which date) "+%A, %B %d, %Y - %H:%M:%S")
 
 # Check variables with the path of each key command
-verify_command "dconf"
-my_dconf_directory=$(which dconf)		# dconf command route
-
 verify_command "date"
 my_date_directory=$(which date)			# date command route
+
+verify_command "dconf"
+my_dconf_directory=$(which dconf)		# dconf command route
 
 verify_command "echo"
 my_echo_directory=$(which echo)			# echo command route
@@ -95,7 +95,7 @@ verify_command "xmodmap"
 my_xmodmap_directory=$(which xmodmap)		# xmodmap command route
 
 # Decision control if PulseAudio is installed.
-if [[ -f $my_date_directory && -f $my_echo_directory && -f $my_setxkbmap_directory && -f $my_xmodmap_directory ]]
+if [[ -f $my_date_directory && -f $my_dconf_directory && -f $my_echo_directory && -f $my_setxkbmap_directory && -f $my_xmodmap_directory ]]
 then
 	$(which echo) "$my_date"
 	$(which echo) "Utility for modifying keymaps."
@@ -153,7 +153,7 @@ then
 		elif [ $option -eq 5 ]; then
 			sudo systemctl restart gdm3
 		elif [ $option -eq 6 ]; then
-			killall gnome-shell
+			sudo killall gnome-shell
 		elif [ $option -eq 7 ]; then
 			$(which echo) "Leaving this program..."
 			break
@@ -164,6 +164,7 @@ then
 else
 	$(which echo) "Utility for modifying keymaps does not activate!"
 	$(which echo) $my_date_directory
+	$(which echo) $my_dconf_directory
 	$(which echo) $my_echo_directory
 	$(which echo) $my_setxkbmap_directory
 	$(which echo) $my_xmodmap_directory
