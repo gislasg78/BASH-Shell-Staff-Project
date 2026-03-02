@@ -3,7 +3,7 @@
 # Bash program to activate or deactivate the mixing of audio and video
 # playback and recording channels
 # Created by: Gustavo Islas Gálvez
-# Generation Date: Saturday, January 10, 2026. (6th Version)
+# Generation Date: Monday, March 02, 2026. (7th Version)
 
 # Function to deactivate and clean the Stream mode
 disable_stream()
@@ -174,9 +174,11 @@ then
 		$(which date) "+%Y-%m-%d - %H:%M:%S"
 		$(which echo) "Selected option: [$option]."
 		$(which echo) "Attempts made:   [$counter]."
+		$(which echo) "Current PID:     [$$]."
+		$(which echo) "Father  PID:     [$PPID]."
 		$(which echo) "User active:     [$USER]."
 		$(which echo) "User folder:     [$HOME]."
-		$(which echo) "Key Operation:   [$RANDOM]."
+		$(which echo) "Key Random Oper: [$RANDOM]."
 		$(which echo) ""
 
 		case $option in
