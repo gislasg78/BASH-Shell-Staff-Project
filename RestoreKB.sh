@@ -3,19 +3,25 @@
 # Bash program. Its purpose is to readjust and restore
 # the keyboard state to default values
 # Created by: Gustavo Islas Gálvez
-# Generation Date: Monday, March 02, 2026. (4th Version)
+# Generation Date: Friday, March 06, 2026. (5th Version)
 
 # Function to fully restore keyboard control
 restore_control_keyboard()
 {
+	# Exploring keyboard settings...
+	$(which echo) ""
+	$(which echo) "Exploring keyboard settings..."
+	sudo $(which xmodmap) -pke | $(which grep) Control
+
 	# Clarifying keyboard control services...
+	$(which echo) ""
 	$(which echo) "Clarifying keyboard control services..."
-	$(which xmodmap) -e "clear control" || { $(which echo) "An error occurred while executing the instruction."; }
+	sudo $(which xmodmap) -e "clear control" || { $(which echo) "An error occurred while executing the instruction."; }
 
 	# Resetting keyboard control services...
 	$(which echo) ""
 	$(which echo) "Resetting keyboard control services..."
-	$(which xmodmap) -e "add control = Control_L Control_R" || { $(which echo) "An error occurred while executing the instruction."; }
+	sudo $(which xmodmap) -e "add control = Control_L Control_R" || { $(which echo) "An error occurred while executing the instruction."; }
 
 	# The configurations were carried out with resounding success!
 	$(which echo) ""
@@ -27,18 +33,36 @@ restore_control_keyboard()
 restore_map_keyboard()
 {
 	# Reset resource settings.
+	$(which echo) ""
 	$(which echo) "Resetting resource setting..."
 	sudo $(which dconf) reset -f /org/gnome/desktop/input-sources/
 
+	# Resetting keyboard configuration maps...
+	$(which echo) ""
+	$(which echo) "Resetting keyboard configuration maps..."
+	sudo $(which setxkbmap) -option
+
+	# Showing original keyboard configurations.
+	$(which echo) ""
+	$(which echo) "Showing original keyboard configurations."
+	sudo $(which setxkbmap) -query
+
 	# Setting default keyboard configuration...
+	$(which echo) ""
 	$(which echo) "Setting default keyboard configuration..."
-	$(which setxkbmap) -layout es || { $(which echo) "An error occurred while executing the instruction."; }
+	sudo $(which setxkbmap) -layout es || { $(which echo) "An error occurred while executing the instruction."; }
 }
 
 # Function to restore essential keyboard services.
 restore_service_keyboard()
 {
+	# Resetting basic keyboard services...
+	$(which echo) ""
+	$(which echo) "Resetting basic keyboard services..."
+	sudo $(which udevadm) trigger
+
 	# Restoring basic keyboard services...
+	$(which echo) ""
 	$(which echo) "Restoring basic keyboard services..."
 
 	# Restoring the keyboard to its original state.
@@ -88,34 +112,43 @@ my_dconf_directory=$(which dconf)		# dconf command route
 verify_command "echo"
 my_echo_directory=$(which echo)			# echo command route
 
+verify_command "evtest"
+my_evtest_directory=$(which evtest)		# evtest command route
+
 verify_command "setxkbmap"
 my_setxkbmap_directory=$(which setxkbmap)	# setxkbmap command route
+
+verify_command "showkey"
+my_showkey_directory=$(which showkey)		# showkey command route
 
 verify_command "xmodmap"
 my_xmodmap_directory=$(which xmodmap)		# xmodmap command route
 
 # Decision control if PulseAudio is installed.
-if [[ -f $my_date_directory && -f $my_dconf_directory && -f $my_echo_directory && -f $my_setxkbmap_directory && -f $my_xmodmap_directory ]]
+if [[ -f $my_date_directory && -f $my_dconf_directory && -f $my_echo_directory && -f $my_evtest_directory && -f $my_setxkbmap_directory && -f $my_showkey_directory && -f $my_xmodmap_directory ]]
 then
 	$(which echo) "$my_date"
 	$(which echo) "Utility for modifying keymaps."
 
-	while [ $option -ne 7 ]
+	while [ $option -ne 10 ]
 	do
 		$(which echo)""
 		$(which date)
-		$(which echo) "+===+====+===+===+====+===+====+=="
-		$(which echo) "|   Keyboard Control Services.   |"
-		$(which echo) "+===+====+===+===+====+===+====+=="
-		$(which echo) "| [1]. Restore control keyboard. |"
-		$(which echo) "| [2]. Restore map keyboard.     |"
-		$(which echo) "| [3]. Restore service keyboard. |"
-		$(which echo) "| [4]. Run key detector.         |"
-		$(which echo) "| [5]. Restart GDM3 system.      |"
-		$(which echo) "| [6]. Rehabilitate Gnome-Shell. |"
-		$(which echo) "| [7]. Exit this program.        |"
-		$(which echo) "+===+====+===+===+====+===+====+=="
-		read -p "Select one option (1-7): " option
+		$(which echo) "+===+====+===+===+====+===+====+===+"
+		$(which echo) "|     Keyboard Control Services.   |"
+		$(which echo) "+===+====+===+===+====+===+====+===+"
+		$(which echo) "| [01]. Restore control keyboard.  |"
+		$(which echo) "| [02]. Restore map keyboard.      |"
+		$(which echo) "| [03]. Restore service keyboard.  |"
+		$(which echo) "| [04]. Run key detector.          |"
+		$(which echo) "| [05]. Run key press display.     |"
+		$(which echo) "| [06]. Run key event detector.    |"
+		$(which echo) "| [07]. Launch GDM3 Control Center.|"
+		$(which echo) "| [08]. Rerun Gnome-Shell.         |"
+		$(which echo) "| [09]. Restart Gnome-Shell.       |"
+		$(which echo) "| [10]. Exit this program.         |"
+		$(which echo) "+===+====+===+===+====+===+====+===+"
+		read -p "Select one option (1-10): " option
 
 		if [ $? -eq 0 ]; then $(which echo) "Choice: [" $option "]."; else $(which echo) "Exit Code: [" $? "]"; fi
 
@@ -136,9 +169,12 @@ then
 			2) $(which echo) "Map Keyboard.";;
 			3) $(which echo) "Service Keyboard.";;
 			4) $(which echo) "Key Detector.";;
-			5) $(which echo) "GDM3 Restart.";;
-			6) $(which echo) "Gnome-Shell restart.";;
-			7) $(which echo) "Exiting this program...";;
+			5) $(which echo) "Key Press Display.";;
+			6) $(which echo) "Key Event Detector.";;
+			7) $(which echo) "GDM3 Control Center.";;
+			8) $(which echo) "Gnome-Shell rerun.";;
+			9) $(which echo) "Gnome-Shell restart.";;
+			10) $(which echo) "Exiting this program...";;
 			*) $(which echo) "Wrong choice: [" $option "]."
 		esac
 
@@ -149,12 +185,18 @@ then
 		elif [ $option -eq 3 ]; then
 			restore_service_keyboard
 		elif [ $option -eq 4 ]; then
-			xev
+			sudo $(which xev)
 		elif [ $option -eq 5 ]; then
-			sudo systemctl restart gdm3
+			sudo $(which showkey)
 		elif [ $option -eq 6 ]; then
-			sudo killall gnome-shell
+			sudo $(which evtest)
 		elif [ $option -eq 7 ]; then
+			gnome-control-center keyboard
+		elif [ $option -eq 8 ]; then
+			sudo $(which killall) -3 gnome-shell
+		elif [ $option -eq 9 ]; then
+			sudo $(which systemctl) restart gdm3
+		elif [ $option -eq 10 ]; then
 			$(which echo) "Leaving this program..."
 			break
 		else
@@ -166,7 +208,9 @@ else
 	$(which echo) $my_date_directory
 	$(which echo) $my_dconf_directory
 	$(which echo) $my_echo_directory
+	$(which echo) $my_evtest_directory
 	$(which echo) $my_setxkbmap_directory
+	$(which echo) $my_showkey_directory
 	$(which echo) $my_xmodmap_directory
 fi
 
