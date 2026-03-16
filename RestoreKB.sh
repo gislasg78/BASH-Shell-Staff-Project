@@ -3,7 +3,7 @@
 # Bash program. Its purpose is to readjust and restore
 # the keyboard state to default values
 # Created by: Gustavo Islas Gálvez
-# Generation Date: Friday, March 06, 2026. (5th Version)
+# Generation Date: Monday, March 16, 2026. (6th Version)
 
 # Function to fully restore keyboard control
 restore_control_keyboard()
@@ -32,6 +32,12 @@ restore_control_keyboard()
 # Function to reset the keyboard's default configuration map.
 restore_map_keyboard()
 {
+	# Setting default keyboard hardware configurations.
+	$(which echo) ""
+	$(which echo) "Setting default keyboard hardware configurations..."
+	sudo $(which modprobe) -r atkbd
+	sudo $(which modprobe) atkbd
+
 	# Reset resource settings.
 	$(which echo) ""
 	$(which echo) "Resetting resource setting..."
@@ -41,6 +47,11 @@ restore_map_keyboard()
 	$(which echo) ""
 	$(which echo) "Resetting keyboard configuration maps..."
 	sudo $(which setxkbmap) -option
+
+	# Setting the control key not to be mapped to the Caps Lock key.
+	$(which echo) ""
+	$(which echo) "Setting the control key not to be mapped to Caps Lock key..."
+	sudo $(which setxkbmap) -option ctrl:nocaps
 
 	# Showing original keyboard configurations.
 	$(which echo) ""
@@ -141,8 +152,8 @@ then
 		$(which echo) "| [02]. Restore map keyboard.      |"
 		$(which echo) "| [03]. Restore service keyboard.  |"
 		$(which echo) "| [04]. Run key detector.          |"
-		$(which echo) "| [05]. Run key press display.     |"
-		$(which echo) "| [06]. Run key event detector.    |"
+		$(which echo) "| [05]. Run key event detector.    |"
+		$(which echo) "| [06]. Run key press display.     |"
 		$(which echo) "| [07]. Launch GDM3 Control Center.|"
 		$(which echo) "| [08]. Rerun Gnome-Shell.         |"
 		$(which echo) "| [09]. Restart Gnome-Shell.       |"
@@ -169,8 +180,8 @@ then
 			2) $(which echo) "Map Keyboard.";;
 			3) $(which echo) "Service Keyboard.";;
 			4) $(which echo) "Key Detector.";;
-			5) $(which echo) "Key Press Display.";;
-			6) $(which echo) "Key Event Detector.";;
+			5) $(which echo) "Key Event Detector.";;
+			6) $(which echo) "Key Press Display.";;
 			7) $(which echo) "GDM3 Control Center.";;
 			8) $(which echo) "Gnome-Shell rerun.";;
 			9) $(which echo) "Gnome-Shell restart.";;
@@ -187,9 +198,9 @@ then
 		elif [ $option -eq 4 ]; then
 			sudo $(which xev)
 		elif [ $option -eq 5 ]; then
-			sudo $(which showkey)
-		elif [ $option -eq 6 ]; then
 			sudo $(which evtest)
+		elif [ $option -eq 6 ]; then
+			sudo $(which showkey)
 		elif [ $option -eq 7 ]; then
 			gnome-control-center keyboard
 		elif [ $option -eq 8 ]; then
