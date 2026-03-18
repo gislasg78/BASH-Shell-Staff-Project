@@ -3,7 +3,7 @@
 # Bash program. Its purpose is to readjust and restore
 # the keyboard state to default values
 # Created by: Gustavo Islas Gálvez
-# Generation Date: Monday, March 16, 2026. (6th Version)
+# Generation Date: Wednesday, March 18, 2026. (7th Version)
 
 # Function to fully restore keyboard control
 restore_control_keyboard()
@@ -23,10 +23,15 @@ restore_control_keyboard()
 	$(which echo) "Resetting keyboard control services..."
 	sudo $(which xmodmap) -e "add control = Control_L Control_R" || { $(which echo) "An error occurred while executing the instruction."; }
 
+	# Restore keyboard default settings.
+	$(which echo) ""
+	$(which echo) "Restore keyboard default settings..."
+	gsettings reset org.gnome.desktop.input-sources xkb-options
+
 	# The configurations were carried out with resounding success!
 	$(which echo) ""
 	$(which echo) "Done!"
-	$(which echo) "The configurations were carried out with resounding success!"
+	$(which echo) "The keyboard control settings have been reset!"
 }
 
 # Function to reset the keyboard's default configuration map.
@@ -41,7 +46,7 @@ restore_map_keyboard()
 	# Reset resource settings.
 	$(which echo) ""
 	$(which echo) "Resetting resource setting..."
-	sudo $(which dconf) reset -f /org/gnome/desktop/input-sources/
+	$(which dconf) reset -f /org/gnome/desktop/input-sources/
 
 	# Resetting keyboard configuration maps...
 	$(which echo) ""
@@ -62,6 +67,16 @@ restore_map_keyboard()
 	$(which echo) ""
 	$(which echo) "Setting default keyboard configuration..."
 	sudo $(which setxkbmap) -layout es || { $(which echo) "An error occurred while executing the instruction."; }
+
+	# Assigning the Control key to the Caps Lock key.
+	$(which echo) ""
+	$(which echo) "Assigning the Control key to the Caps Lock key."
+	gsettings set org.gnome.desktop.input-sources xkb-options "['caps:ctrl_modifier']"
+
+	# The configurations were carried out with resounding success!
+	$(which echo) ""
+	$(which echo) "Done!"
+	$(which echo) "The keyboard mapping settings have been reset!"
 }
 
 # Function to restore essential keyboard services.
@@ -79,9 +94,10 @@ restore_service_keyboard()
 	# Restoring the keyboard to its original state.
 	sudo service keyboard-setup restart || { $(which echo) "An error occurred while executing the instruction."; }
 
-	# Basic keyboard services in OK state!
+	# The configurations were carried out with resounding success!
 	$(which echo) ""
-	$(which echo) "Basic keyboard services restored successfully!"
+	$(which echo) "Done!"
+	$(which echo) "The keyboard services settings have been reset!"
 }
 
 # Function that checks and verifies the existence of the commands necessary for this test script.
