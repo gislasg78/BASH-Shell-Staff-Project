@@ -3,7 +3,16 @@
 # Bash program. Its purpose is to readjust and restore
 # the keyboard state to default values
 # Created by: Gustavo Islas Gálvez
-# Generation Date: Wednesday, March 18, 2026. (7th Version)
+# Generation Date: Thursday, May 14, 2026. (8th Version)
+
+# Function to assign the control key to the caps lock key in Gnome.
+assigning_control_keys_to_caps_lock()
+{
+	# Assigning the Control key to the Caps Lock key.
+	$(which echo) ""
+	$(which echo) "Assigning the Control key to the Caps Lock key."
+	gsettings set org.gnome.desktop.input-sources xkb-options "['caps:ctrl_modifier']"
+}
 
 # Function to fully restore keyboard control
 restore_control_keyboard()
@@ -24,14 +33,21 @@ restore_control_keyboard()
 	sudo $(which xmodmap) -e "add control = Control_L Control_R" || { $(which echo) "An error occurred while executing the instruction."; }
 
 	# Restore keyboard default settings.
-	$(which echo) ""
-	$(which echo) "Restore keyboard default settings..."
-	gsettings reset org.gnome.desktop.input-sources xkb-options
+	restore_gnome_control_keys
 
 	# The configurations were carried out with resounding success!
 	$(which echo) ""
 	$(which echo) "Done!"
 	$(which echo) "The keyboard control settings have been reset!"
+}
+
+# Special function for assigning the control key to the caps key.
+restore_gnome_control_keys()
+{
+	# Restore keyboard default settings.
+	$(which echo) ""
+	$(which echo) "Restore keyboard default settings..."
+	gsettings reset org.gnome.desktop.input-sources xkb-options
 }
 
 # Function to reset the keyboard's default configuration map.
@@ -67,11 +83,6 @@ restore_map_keyboard()
 	$(which echo) ""
 	$(which echo) "Setting default keyboard configuration..."
 	sudo $(which setxkbmap) -layout es || { $(which echo) "An error occurred while executing the instruction."; }
-
-	# Assigning the Control key to the Caps Lock key.
-	$(which echo) ""
-	$(which echo) "Assigning the Control key to the Caps Lock key."
-	gsettings set org.gnome.desktop.input-sources xkb-options "['caps:ctrl_modifier']"
 
 	# The configurations were carried out with resounding success!
 	$(which echo) ""
@@ -157,7 +168,7 @@ then
 	$(which echo) "$my_date"
 	$(which echo) "Utility for modifying keymaps."
 
-	while [ $option -ne 10 ]
+	while [ $option -ne 11 ]
 	do
 		$(which echo)""
 		$(which date)
@@ -171,37 +182,39 @@ then
 		$(which echo) "| [05]. Run key event detector.    |"
 		$(which echo) "| [06]. Run key press display.     |"
 		$(which echo) "| [07]. Launch GDM3 Control Center.|"
-		$(which echo) "| [08]. Rerun Gnome-Shell.         |"
-		$(which echo) "| [09]. Restart Gnome-Shell.       |"
-		$(which echo) "| [10]. Exit this program.         |"
+		$(which echo) "| [08]. Reassign ctrl to caps lock.|"
+		$(which echo) "| [09]. Rerun Gnome-Shell.         |"
+		$(which echo) "| [10]. Restart Gnome-Shell.       |"
+		$(which echo) "| [11]. Exit this program.         |"
 		$(which echo) "+===+====+===+===+====+===+====+===+"
-		read -p "Select one option (1-10): " option
+		read -p "Select one option (1-11): " option
 
 		if [ $? -eq 0 ]; then $(which echo) "Choice: [" $option "]."; else $(which echo) "Exit Code: [" $? "]"; fi
 
 		counter=$(( $counter + 1 ))
 		$(which echo) ""
 		$(which date) "+%Y-%m-%d - %H:%M:%S"
-		$(which echo) "Selected option: [$option]."
-		$(which echo) "Attempts made:   [$counter]."
-		$(which echo) "Current PID:     [$$]."
-		$(which echo) "Father  PID:     [$PPID]."
-		$(which echo) "User active:     [$USER]."
-		$(which echo) "User folder:     [$HOME]."
-		$(which echo) "Key Random Oper: [$RANDOM]."
+		$(which echo) "* Selected option: [$option]."
+		$(which echo) "< Attempts made:   [$counter]."
+		$(which echo) "+ Current PID:     [$$]."
+		$(which echo) "+ Father  PID:     [$PPID]."
+		$(which echo) "- User active:     [$USER]."
+		$(which echo) "- User folder:     [$HOME]."
+		$(which echo) "> Key Random Oper: [$RANDOM]."
 		$(which echo) ""
 
 		case $option in
-			1) $(which echo) "Control Keyboard.";;
-			2) $(which echo) "Map Keyboard.";;
-			3) $(which echo) "Service Keyboard.";;
-			4) $(which echo) "Key Detector.";;
-			5) $(which echo) "Key Event Detector.";;
-			6) $(which echo) "Key Press Display.";;
-			7) $(which echo) "GDM3 Control Center.";;
-			8) $(which echo) "Gnome-Shell rerun.";;
-			9) $(which echo) "Gnome-Shell restart.";;
-			10) $(which echo) "Exiting this program...";;
+			1)  $(which echo) "** Control Keyboard. **";;
+			2)  $(which echo) "** Map Keyboard. **";;
+			3)  $(which echo) "** Service Keyboard. **";;
+			4)  $(which echo) "** Key Detector. **";;
+			5)  $(which echo) "** Key Event Detector. **";;
+			6)  $(which echo) "** Key Press Display. **";;
+			7)  $(which echo) "** GDM3 Control Center. **";;
+			8)  $(which echo) "** Reassigning ctrl to caps. **";;
+			9)  $(which echo) "** Gnome-Shell rerun. **";;
+			10) $(which echo) "** Gnome-Shell restart. **";;
+			11) $(which echo) "Exiting this program...";;
 			*) $(which echo) "Wrong choice: [" $option "]."
 		esac
 
@@ -220,10 +233,12 @@ then
 		elif [ $option -eq 7 ]; then
 			gnome-control-center keyboard
 		elif [ $option -eq 8 ]; then
-			sudo $(which killall) -3 gnome-shell
+			assigning_control_keys_to_caps_lock
 		elif [ $option -eq 9 ]; then
-			sudo $(which systemctl) restart gdm3
+			sudo $(which killall) -3 gnome-shell
 		elif [ $option -eq 10 ]; then
+			sudo $(which systemctl) restart gdm3
+		elif [ $option -eq 11 ]; then
 			$(which echo) "Leaving this program..."
 			break
 		else
